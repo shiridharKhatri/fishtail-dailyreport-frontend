@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [verification, setVerification] = useState<Object>({});
   const [userType, setUserType] = useState("");
   const router = useRouter();
+  const token = Cookies.get("employee_token");
 
   useEffect(() => {
     let empToken = Cookies.get("employee_token");
@@ -59,7 +60,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchUserData = async () => {
     try {
       const { data } = await axiosInstance.get(`/api/auth/employee/fetch`, {
-        withCredentials: true,
+        // withCredentials: true,{
+        headers: {
+          'auth-token' : token
+        },
       });
 
       if (data.success) {
@@ -75,7 +79,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const verifyUser = async () => {
     try {
       const { data } = await axiosInstance.get(`/api/auth/employee/verify`, {
-        withCredentials: true,
+        // withCredentials: true,
+        headers: {
+          'auth-token' : token
+        },
       });
 
       if (data.success) {
@@ -94,14 +101,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     router.push("/");
   };
 
-
   useEffect(() => {
     fetchUserData();
-    verifyUser()
+    verifyUser();
   }, []);
-  
+
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, logout, verification, userType, verifyUser }}>
+    <AuthContext.Provider
+      value={{ user, isLoggedIn, logout, verification, userType, verifyUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

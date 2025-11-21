@@ -6,7 +6,7 @@ import { useGoogleLogin, type TokenResponse } from "@react-oauth/google";
 import { useState, useRef, useEffect } from "react";
 import { Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { Toaster, toast } from "sonner";
-
+import Cookies from "js-cookie";
 import BearCharacter from "./bear-character";
 import GoogleSignButton from "./google-sign-button";
 import axiosInstance from "../services/axiosInstance";
@@ -42,13 +42,17 @@ export default function LoginForm() {
           `/api/auth/employee/login`,
           {
             code,
-          },
-          {
-            withCredentials: true,
           }
+          // {
+          //   withCredentials: true,
+          //   headers: {
+          //     'auth-token' : Cookies.get("employee_token")
+          //   },
+          // }
         );
         if (data.success) {
           toast.success("Login successful!");
+          Cookies.set("employee_token", data.token, { expires:7 });
           router.push(data.redirect);
           window.location.reload();
         }else{
