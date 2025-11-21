@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Toaster, toast } from "sonner";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 interface ApiReport {
   edited: boolean;
@@ -56,6 +57,8 @@ export default function EmployeeDashboard() {
     })})`;
   };
 
+  let token = Cookies.get("employee_token");
+
   const [reportDate, setReportDate] = useState<"today" | "yesterday">("today");
   const [activities, setActivities] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -73,7 +76,11 @@ export default function EmployeeDashboard() {
     try {
       const response = await axiosInstance.get(
         `/api/report/employee/getReports`,
-        { withCredentials: true }
+        {
+          headers: {
+            "auth-token": token,
+          },
+        }
       );
 
       if (response.data.success) {
@@ -119,8 +126,7 @@ export default function EmployeeDashboard() {
         `/api/report/employee/submit`,
         data,
         {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { "Content-Type": "multipart/form-data", "auth-token": token },
         }
       );
 
@@ -150,8 +156,7 @@ export default function EmployeeDashboard() {
         `/api/report/employee/edit/${id}`,
         data,
         {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { "Content-Type": "multipart/form-data", "auth-token": token },
         }
       );
 
