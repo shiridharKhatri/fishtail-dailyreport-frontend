@@ -1,5 +1,5 @@
-@import "tailwindcss";
-/* @import "tw-animate-css"; */
+@import 'tailwindcss';
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -75,7 +75,8 @@
 }
 
 @theme inline {
-  /* optional: --font-sans, --font-serif, --font-mono if they are applied in the layout.tsx */
+  --font-sans: 'Space Grotesk', sans-serif;
+  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -112,18 +113,25 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  --animation-spin: spin 1s linear infinite;
 }
+
+-webkit-scrollbar{
+display: none
+}
+
+/* Hide scrollbar for Chrome, Safari and Edge */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
+aside::-webkit-scrollbar {
+  width: 0px;
+}
+
 
 @layer base {
   * {
@@ -132,55 +140,21 @@
   body {
     @apply bg-background text-foreground;
   }
-}
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+  /* Added custom selection colors */
+  ::selection {
+    background-color: #86efac;
+    color: #000000;
   }
 }
 
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-/* Glass morphism effect */
-.glass {
-  @apply bg-background/40 backdrop-blur-md border border-foreground/10;
-}
-
-/* Blob animation */
-@keyframes blob {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
+/* Added utility to hide scrollbars */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
-  25% {
-    transform: translate(20px, -50px) scale(1.1);
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-  50% {
-    transform: translate(-20px, 20px) scale(0.9);
-  }
-  75% {
-    transform: translate(50px, 50px) scale(1.05);
-  }
-}
-
-.animate-blob {
-  animation: blob 7s infinite;
-}
-
-.animation-delay-2000 {
-  animation-delay: 2s;
-}
-
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
-
-.active\:scale-98:active {
-  transform: scale(0.98);
 }
