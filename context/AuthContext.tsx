@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     let admToken = Cookies.get("admin_token");
     if (empToken) {
       setIsLoggedIn(true);
-      setUserType("employee");
+      setUserType("employee");  
     } else if (admToken) {
       setIsLoggedIn(true);
       setUserType("admin");

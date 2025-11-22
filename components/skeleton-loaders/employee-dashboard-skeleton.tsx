@@ -75,7 +75,7 @@ export function EmployeeDashboardSkeletonLoader() {
 
               {/* Reports list */}
               <div className="space-y-3 max-h-96">
-                {Array.from({ length: 4 }).map((_, i) => (
+                {Array.from({ length: 2 }).map((_, i) => (
                   <div key={i} className="p-4 rounded-lg border border-white/10 space-y-2">
                     <Skeleton className="h-4 w-full" />
                     <Skeleton className="h-3 w-3/4" />

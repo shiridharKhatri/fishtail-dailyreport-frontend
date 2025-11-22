@@ -18,11 +18,11 @@ import Avatar from "@/components/Avatar";
 import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import Navbar from "@/components/navbar";
+import { ProfileSkeletonLoader } from "@/components/skeleton-loaders/profile-skeleton";
 
 export default function EmployeeProfile() {
   const router = useRouter();
-  const { user } = useAuth();
-
+  const { user, isLoggedIn } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
 
   const defaultProfile = {
@@ -82,112 +82,124 @@ export default function EmployeeProfile() {
   );
 
   return (
-    <div className="relative w-full min-h-screen">
-      <GlassBackground />
-      <div className="relative z-10">
-        <Navbar
-          {...({ userRole: "employee", userName: user?.name ?? "" } as any)}
-        />
+    <>
+      {" "}
+      {!isLoggedIn && <ProfileSkeletonLoader />}
+      {isLoggedIn && (
+        <div className="relative w-full min-h-screen">
+          <GlassBackground />
+          <div className="relative z-10">
+            <Navbar
+              {...({ userRole: "employee", userName: user?.name ?? "" } as any)}
+            />
 
-        <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Back button */}
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-2 px-3 py-2 mb-8 rounded-lg hover:bg-accent transition-all"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            <span className="text-sm font-medium">Back to Dashboard</span>
-          </button>
-
-          {/* Title */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-foreground">Profile</h2>
-            <p className="text-muted-foreground mt-2">
-              Manage your personal information
-            </p>
-          </div>
-
-          {/* Content */}
-          <div className="glass rounded-2xl p-8 space-y-8">
-            {/* Profile Header */}
-            <div className="flex items-center justify-between pb-6 border-b border-border">
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">
-                  {!formData.picture ? (
-                    <Avatar
-                      type="customer"
-                      seed={formData.fullName || "User Avatar"}
-                    />
-                  ) : (
-                    <Image
-                      src={formData.picture}
-                      alt={formData.fullName}
-                      width={80}
-                      height={80}
-                      className="w-20 h-20 rounded-full"
-                    />
-                  )}
-                </div>
-
-                <div>
-                  <h3 className="text-2xl font-semibold text-foreground">
-                    {formData.fullName}
-                  </h3>
-                  <p className="text-muted-foreground">{formData.role}</p>
-                </div>
-              </div>
-
+            <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              {/* Back button */}
               <button
-                onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all"
+                onClick={() => router.back()}
+                className="flex items-center gap-2 px-3 py-2 mb-8 rounded-lg hover:bg-accent transition-all"
               >
-                {isEditing ? (
-                  <>
-                    <Save className="w-4 h-4" />
-                    Save
-                  </>
-                ) : (
-                  <>
-                    <Edit2 className="w-4 h-4" />
-                    Edit
-                  </>
-                )}
+                <ArrowLeft className="w-5 h-5" />
+                <span className="text-sm font-medium">Back to Dashboard</span>
               </button>
-            </div>
 
-            {/* Profile Info */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Field label="Full Name" icon={null} field="fullName" />
-              <Field
-                label="Email"
-                icon={<Mail className="w-4 h-4" />}
-                field="email"
-              />
-              <Field
-                label="Phone"
-                icon={<Phone className="w-4 h-4" />}
-                field="phone"
-              />
-              <Field
-                label="Location"
-                icon={<MapPin className="w-4 h-4" />}
-                field="location"
-              />
-              <Field label="Department" field="department" editable={false} />
-
-              <div>
-                <label className="text-sm font-medium text-foreground block mb-2 flex items-center gap-2">
-                  <Calendar className="w-4 h-4" />
-                  Join Date
-                </label>
-                <p className="text-foreground">
-                  {moment(formData.joinDate).calendar()}
+              {/* Title */}
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold text-foreground">Profile</h2>
+                <p className="text-muted-foreground mt-2">
+                  Manage your personal information
                 </p>
               </div>
-            </div>
+
+              {/* Content */}
+              <div className="glass rounded-2xl p-8 space-y-8">
+                {/* Profile Header */}
+                <div className="flex items-center justify-between pb-6 border-b border-border">
+                  <div className="flex items-center gap-4">
+                    <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">
+                      {!formData.picture ? (
+                        <Avatar
+                          type="customer"
+                          seed={formData.fullName || "User Avatar"}
+                        />
+                      ) : (
+                        <Image
+                          src={formData.picture}
+                          alt={formData.fullName}
+                          width={80}
+                          height={80}
+                          className="w-20 h-20 rounded-full"
+                        />
+                      )}
+                    </div>
+
+                    <div>
+                      <h3 className="text-2xl font-semibold text-foreground">
+                        {formData.fullName}
+                      </h3>
+                      <p className="text-muted-foreground">{formData.role}</p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() =>
+                      isEditing ? handleSave() : setIsEditing(true)
+                    }
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-all"
+                  >
+                    {isEditing ? (
+                      <>
+                        <Save className="w-4 h-4" />
+                        Save
+                      </>
+                    ) : (
+                      <>
+                        <Edit2 className="w-4 h-4" />
+                        Edit
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Profile Info */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Field label="Full Name" icon={null} field="fullName" />
+                  <Field
+                    label="Email"
+                    icon={<Mail className="w-4 h-4" />}
+                    field="email"
+                  />
+                  <Field
+                    label="Phone"
+                    icon={<Phone className="w-4 h-4" />}
+                    field="phone"
+                  />
+                  <Field
+                    label="Location"
+                    icon={<MapPin className="w-4 h-4" />}
+                    field="location"
+                  />
+                  <Field
+                    label="Department"
+                    field="department"
+                    editable={false}
+                  />
+
+                  <div>
+                    <label className="text-sm font-medium text-foreground block mb-2 flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      Join Date
+                    </label>
+                    <p className="text-foreground">
+                      {moment(formData.joinDate).calendar()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </main>
           </div>
-        </main>
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   );
 }
