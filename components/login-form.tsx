@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
 import Image from "next/image"
 import { LoadingButton } from "./ui/loading-button"
+import { LoginLoader } from "./login-loader"
 
 export default function LoginForm() {
   const router = useRouter()
@@ -21,6 +22,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [isLoggedin, setIsLoggedin] = useState(false)
   const passwordInputRef = useRef<HTMLInputElement>(null)
   const { fetchUserData } = useAuth()
   const handleEmailSubmit = async (e: React.FormEvent) => {
@@ -36,17 +38,20 @@ export default function LoginForm() {
 
   const responseGoogle = async (res: TokenResponse | { code?: string }) => {
     try {
+        setIsLoggedin(true)
       if ("code" in res && res.code) {
         const code = res.code
 
         const { data } = await axiosInstance.post(`/api/auth/employee/login`, {
           code,
         })
+      
         if (data.success) {
           toast.success("Login successful!")
           Cookies.set("employee_token", data.token, { expires: 7 })
           fetchUserData()
           router.replace(data.redirect)
+          
           // window.location.reload()
         } else {
           toast.error(data.message)
@@ -87,7 +92,8 @@ export default function LoginForm() {
 
   return (
     <>
-      <div className="space-y-2">
+      {isLoggedin && <LoginLoader />}
+      {!isLoggedin &&<div className="space-y-2">
         <div className="text-center mb-8 flex flex-col items-center">
           <Image src={"/logo.png"} alt="Logo" width={150} height={150} className="mb-6" />
           <h1 className="text-2xl font-semibold text-foreground">Welcome back</h1>
@@ -204,7 +210,7 @@ export default function LoginForm() {
           <p className="text-xs text-muted-foreground">Secured by enterprise-grade encryption</p>
           <div className="w-1 h-1 rounded-full bg-primary/50" />
         </div>
-      </div>
+      </div>}
       <Toaster richColors={true} />
     </>
   )

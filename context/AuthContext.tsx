@@ -70,8 +70,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoggedIn(false);
     setUser(null);
     router.replace("/");
-
-    setTimeout(() => setLoggedout(false), 500); // reset after half a second
   };
 
   useEffect(() => {
