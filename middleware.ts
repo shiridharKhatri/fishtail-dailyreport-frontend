@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get("employee_token") || req.cookies.get("admin_token");
+  const token =
+    req.cookies.get("employee_token") || req.cookies.get("admin_token");
   const url = req.nextUrl.clone();
 
   // If no token, redirect to login page (/)

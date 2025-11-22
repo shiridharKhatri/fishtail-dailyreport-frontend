@@ -14,9 +14,9 @@ const mockRecents: RecentActivity[] = [
   {
     id: "1",
     type: "report_submitted",
-    description: "John Doe submitted daily report",
+    description: "Ken kaneki submitted daily report",
     timestamp: "2025-11-22 10:30 AM",
-    actor: "John Doe",
+    actor: "Ken kaneki",
   },
   {
     id: "2",

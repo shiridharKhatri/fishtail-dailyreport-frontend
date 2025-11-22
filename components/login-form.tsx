@@ -100,7 +100,7 @@ export default function LoginForm() {
           <p className="text-sm text-muted-foreground mt-1">Sign in to your account to continue</p>
         </div>
 
-        <div className="glass rounded-2xl p-6 sm:p-8 space-y-6 glow-green">
+        <div className="glass rounded-2xl p-6 sm:p-8 space-y-6 glow-green bg-[var(--card)] rounded-2xl md:rounded-2xl border border-[var(--border)]">
           {step === "password" && <BearCharacter isPasswordVisible={showPassword} passwordValue={password} />}
 
           {step === "email" && (

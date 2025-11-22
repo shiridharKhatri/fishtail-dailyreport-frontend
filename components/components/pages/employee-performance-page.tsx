@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronDown, TrendingUp, AlertCircle, CheckCircle } from "lucide-react"
+import { ChevronDown, TrendingUp, AlertCircle, CheckCircle, Search } from "lucide-react"
 
 interface EmployeePerformance {
   id: string
@@ -19,9 +19,9 @@ interface EmployeePerformance {
 const performanceData: EmployeePerformance[] = [
   {
     id: "1",
-    name: "John Doe",
+    name: "Kan kaneki",
     department: "Engineering",
-    email: "john@example.com",
+    email: "kaneki@example.com",
     submissionRate: 98,
     missedCount: 1,
     onTimeCount: 49,
@@ -81,6 +81,7 @@ const performanceData: EmployeePerformance[] = [
 
 export function EmployeePerformancePage() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState("")
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -121,6 +122,13 @@ export function EmployeePerformancePage() {
     }
   }
 
+  const filteredPerformanceData = performanceData.filter(
+    (emp) =>
+      emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      emp.department.toLowerCase().includes(searchQuery.toLowerCase()),
+  )
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -128,7 +136,17 @@ export function EmployeePerformancePage() {
         <p className="text-[#919191] text-sm">Track submission rates, on-time performance, and missed report dates</p>
       </div>
 
-      {/* Performance Summary Cards */}
+      <div className="flex items-center gap-3 bg-[#0D0D0D] rounded-2xl px-4 py-3 border border-[#1F1F1F]">
+        <Search className="h-5 w-5 text-[#919191]" />
+        <input
+          type="text"
+          placeholder="Search by name, email, or department..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="flex-1 bg-transparent text-white outline-none placeholder-[#919191] text-sm"
+        />
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-[#0D0D0D] rounded-2xl p-6 border border-[#1F1F1F]">
           <div className="flex items-center justify-between">
@@ -159,9 +177,8 @@ export function EmployeePerformancePage() {
         </div>
       </div>
 
-      {/* Performance List */}
       <div className="space-y-3">
-        {performanceData.map((employee) => (
+        {filteredPerformanceData.map((employee) => (
           <div key={employee.id} className={`rounded-2xl border transition-all ${getStatusColor(employee.status)}`}>
             <button
               onClick={() => setExpandedId(expandedId === employee.id ? null : employee.id)}

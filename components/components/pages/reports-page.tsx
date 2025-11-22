@@ -23,14 +23,14 @@ interface Report {
 const mockReports: Report[] = [
   {
     id: "1",
-    employeeName: "John Doe",
+    employeeName: "Kan kaneki",
     date: "2025-11-22",
     activitySummary: "Completed API integration, reviewed PRs",
     hasAttachment: true,
     edited: false,
     lastUpdated: "2025-11-22 08:00 AM",
     department: "Engineering",
-    email: "john.doe@company.com",
+    email: "kaneki@example.com",
     attachmentUrl: "/api-integration-screenshot.jpg",
     attachmentName: "API Integration Screenshot",
     fullDetails:

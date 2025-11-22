@@ -44,7 +44,7 @@ export function AddEmployeePage() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full bg-[#1F1F1F] text-white placeholder-[#919191] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#86efac]"
-                placeholder="John Doe"
+                placeholder="Ken Kaneki"
               />
             </div>
 
@@ -55,7 +55,7 @@ export function AddEmployeePage() {
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full bg-[#1F1F1F] text-white placeholder-[#919191] rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#86efac]"
-                placeholder="john@example.com"
+                placeholder="kaneki@example.com"
               />
             </div>
           </div>

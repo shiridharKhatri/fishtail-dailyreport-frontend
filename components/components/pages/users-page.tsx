@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Edit2, Trash2, CheckCircle, XCircle, Eye, X } from "lucide-react"
+import { Edit2, Trash2, CheckCircle, XCircle, Eye, X, Search } from "lucide-react"
 
 interface Employee {
   id: string
@@ -21,8 +21,8 @@ interface Employee {
 const mockEmployees: Employee[] = [
   {
     id: "1",
-    name: "John Doe",
-    email: "john@example.com",
+    name: "Ken kaneki",
+    email: "kaneki@example.com",
     googleId: "google123",
     role: "fulltime",
     department: "Engineering",
@@ -68,6 +68,7 @@ export function UsersPage() {
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null)
   const [viewMode, setViewMode] = useState<"view" | "edit">("view")
   const [editFormData, setEditFormData] = useState<Partial<Employee>>({})
+  const [searchQuery, setSearchQuery] = useState("")
 
   const handleApprove = (id: string) => {
     setEmployees(employees.map((e) => (e.id === id ? { ...e, approved: true } : e)))
@@ -107,6 +108,13 @@ export function UsersPage() {
     setViewMode("view")
   }
 
+  const filteredEmployees = employees.filter(
+    (emp) =>
+      emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      emp.department.toLowerCase().includes(searchQuery.toLowerCase()),
+  )
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -114,7 +122,17 @@ export function UsersPage() {
         <p className="text-[#919191] text-sm">Manage all employees and their profiles</p>
       </div>
 
-      {/* Table */}
+      <div className="flex items-center gap-3 bg-[#0D0D0D] rounded-2xl px-4 py-3 border border-[#1F1F1F]">
+        <Search className="h-5 w-5 text-[#919191]" />
+        <input
+          type="text"
+          placeholder="Search by name, email, or department..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="flex-1 bg-transparent text-white outline-none placeholder-[#919191] text-sm"
+        />
+      </div>
+
       <div className="bg-[#0D0D0D] rounded-2xl overflow-hidden border border-[#1F1F1F]">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -130,7 +148,7 @@ export function UsersPage() {
               </tr>
             </thead>
             <tbody>
-              {employees.map((emp) => (
+              {filteredEmployees.map((emp) => (
                 <tr key={emp.id} className="border-b border-[#1F1F1F] hover:bg-[#1F1F1F]/30 transition-colors">
                   <td className="px-6 py-4 text-white font-medium">{emp.name}</td>
                   <td className="px-6 py-4 text-[#919191]">{emp.email}</td>
@@ -208,13 +226,17 @@ export function UsersPage() {
               ))}
             </tbody>
           </table>
+          {filteredEmployees.length === 0 && (
+            <div className="text-center py-8 text-[#919191]">
+              <p>No employees found matching "{searchQuery}"</p>
+            </div>
+          )}
         </div>
       </div>
 
       {selectedEmployee && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-[#0D0D0D] rounded-2xl border border-[#1F1F1F] max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl">
-            {/* Modal Header */}
             <div className="sticky top-0 flex justify-between items-center p-8 border-b border-[#1F1F1F] bg-[#0D0D0D]">
               <h2 className="text-2xl font-bold text-white">
                 {viewMode === "edit" ? "Edit Employee" : selectedEmployee.name}
@@ -227,7 +249,6 @@ export function UsersPage() {
               </button>
             </div>
 
-            {/* Modal Content */}
             <div className="p-8">
               {viewMode === "view" ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -362,7 +383,6 @@ export function UsersPage() {
               )}
             </div>
 
-            {/* Modal Footer */}
             <div className="sticky bottom-0 flex gap-3 p-8 border-t border-[#1F1F1F] bg-[#0D0D0D]">
               {viewMode === "edit" ? (
                 <>
