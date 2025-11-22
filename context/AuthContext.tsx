@@ -67,9 +67,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setLoggedout(true);
     Cookies.remove("employee_token");
     Cookies.remove("admin_token");
-    setIsLoggedIn(false);
     setUser(null);
     router.replace("/");
+    setTimeout(() => {
+      setIsLoggedIn(false);
+    }, 20000);
   };
 
   useEffect(() => {
