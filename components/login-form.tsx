@@ -22,7 +22,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const passwordInputRef = useRef<HTMLInputElement>(null)
-  const { isLoggedIn } = useAuth()
+  const { fetchUserData } = useAuth()
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
@@ -45,8 +45,9 @@ export default function LoginForm() {
         if (data.success) {
           toast.success("Login successful!")
           Cookies.set("employee_token", data.token, { expires: 7 })
-          router.push(data.redirect)
-          window.location.reload()
+          fetchUserData()
+          router.replace(data.redirect)
+          // window.location.reload()
         } else {
           toast.error(data.message)
         }
@@ -73,7 +74,7 @@ export default function LoginForm() {
     e.preventDefault()
     setIsLoading(true)
     try {
-      console.log("Authenticating with:", email, password)
+      // console.log("Authenticating with:", email, password)
     } finally {
       setIsLoading(false)
     }

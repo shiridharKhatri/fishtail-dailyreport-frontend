@@ -31,6 +31,7 @@ type AuthContextType = {
   verification: Object;
   logout: () => void;
   loggedOut: Boolean;
+  fetchUserData: () => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -41,10 +42,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [verification, setVerification] = useState<Object>({});
   const [userType, setUserType] = useState("");
   const router = useRouter();
-  const token = Cookies.get("employee_token");
   const [loggedOut, setLoggedout] = useState(false);
   const fetchUserData = async () => {
     try {
+      const token = Cookies.get("employee_token") || Cookies.get("admin_token");
       const { data } = await axiosInstance.get(`/api/auth/employee/fetch`, {
         // withCredentials: true,{
         headers: {
@@ -79,7 +80,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoggedIn, logout, verification, userType, loggedOut }}
+      value={{
+        user,
+        isLoggedIn,
+        logout,
+        verification,
+        userType,
+        loggedOut,
+        fetchUserData,
+      }}
     >
       {children}
     </AuthContext.Provider>
