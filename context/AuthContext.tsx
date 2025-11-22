@@ -29,9 +29,8 @@ type AuthContextType = {
   isLoggedIn: boolean;
   userType: string;
   verification: Object;
-  verifyUser: () => Promise<void>;
   logout: () => void;
-  loggedOut: boolean;
+  loggedOut:Boolean
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -41,25 +40,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [verification, setVerification] = useState<Object>({});
   const [userType, setUserType] = useState("");
-  const [loggedOut, setLoggedOut] = useState(false);
   const router = useRouter();
   const token = Cookies.get("employee_token");
-
-
-  useEffect(() => {
-    let empToken = Cookies.get("employee_token");
-    let admToken = Cookies.get("admin_token");
-    if (empToken) {
-      setIsLoggedIn(true);
-      setUserType("employee");  
-    } else if (admToken) {
-      setIsLoggedIn(true);
-      setUserType("admin");
-    } else {
-      setIsLoggedIn(false);
-    }
-  }, []);
-
+  const [loggedOut, setLoggedout] = useState(false)
   const fetchUserData = async () => {
     try {
       const { data } = await axiosInstance.get(`/api/auth/employee/fetch`, {
@@ -79,41 +62,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const verifyUser = async () => {
-    try {
-      const { data } = await axiosInstance.get(`/api/auth/employee/verify`, {
-        // withCredentials: true,
-        headers: {
-          'auth-token' : token
-        },
-      });
-
-      if (data.success) {
-        setVerification(data.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+ 
 
   const logout = () => {
-    setLoggedOut(true);
+    setLoggedout(true)
     Cookies.remove("employee_token");
     Cookies.remove("admin_token");
+    setIsLoggedIn(false);
     setUser(null);
     router.push("/");
-    setIsLoggedIn(false);
-    setLoggedOut(true);
+    setLoggedout(false)
   };
 
   useEffect(() => {
     fetchUserData();
-    verifyUser();
   }, []);
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoggedIn, logout, verification, userType, verifyUser, loggedOut }}
+      value={{ user, isLoggedIn, logout, verification, userType, loggedOut }}
     >
       {children}
     </AuthContext.Provider>

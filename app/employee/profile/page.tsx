@@ -34,6 +34,8 @@ export default function EmployeeProfile() {
     joinDate: (user as any)?.joinedAt ?? "N/A",
     role: (user as any)?.role ?? "N/A",
     picture: (user as any)?.picture ?? "",
+    dateOfBirth: (user as any)?.dateOfBirth ?? "N/A",
+    gender: (user as any)?.gender ?? "N/A",
   };
 
   const [formData, setFormData] = useState(defaultProfile);
@@ -178,6 +180,16 @@ export default function EmployeeProfile() {
                     label="Location"
                     icon={<MapPin className="w-4 h-4" />}
                     field="location"
+                  />
+                  <Field
+                    label="Gender"
+                    icon={<MapPin className="w-4 h-4" />}
+                    field="gender"
+                  />
+                  <Field
+                    label="Date of Birth"
+                    icon={<Calendar className="w-4 h-4" />}
+                    field="dateOfBirth"
                   />
                   <Field
                     label="Department"
