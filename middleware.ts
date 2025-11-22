@@ -3,23 +3,38 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const token =
-    req.cookies.get("employee_token") || req.cookies.get("admin_token");
+  const employeeToken = req.cookies.get("employee_token");
+  const adminToken = req.cookies.get("admin_token");
   const url = req.nextUrl.clone();
 
-  // If no token, redirect to login page (/)
-  if (!token) {
+  // If user is trying to access login page
+  if (url.pathname === "/") {
+    if (employeeToken) {
+      url.pathname = "/employee";
+      return NextResponse.redirect(url);
+    }
+    if (adminToken) {
+      url.pathname = "/admin";
+      return NextResponse.redirect(url);
+    }
+    // If no token, let them access login
+    return NextResponse.next();
+  }
+
+  // For protected routes: redirect if no token
+  if (url.pathname.startsWith("/employee") && !employeeToken) {
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+  if (url.pathname.startsWith("/admin") && !adminToken) {
     url.pathname = "/";
     return NextResponse.redirect(url);
   }
 
-  // Optional: you can fetch /api/verify here to check role
-  // or decode JWT token to restrict routes
-
   return NextResponse.next();
 }
 
-// Apply middleware only to protected routes
+// Apply middleware to login page and protected routes
 export const config = {
-  matcher: ["/employee/:path*", "/admin/:path*"],
+  matcher: ["/", "/employee/:path*", "/admin/:path*"],
 };
