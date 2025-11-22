@@ -15,7 +15,7 @@ interface NavbarProps {
   isLoading?: boolean;
 }
 
-export default function Navbar({ isLoading = false }: NavbarProps) {
+export default function Navbar() {
   const { theme, toggleTheme } = useThemeLocal();
   const { user, logout, loggedOut } = useAuth();
 
