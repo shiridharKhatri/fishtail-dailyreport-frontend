@@ -32,6 +32,7 @@ type AuthContextType = {
   logout: () => void;
   loggedOut: Boolean;
   fetchUserData: () => void;
+  editUserDetails: (updatedData: any) => Promise<any>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -63,6 +64,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const editUserDetails = async (updatedData: any) => {
+    try {
+      const token = Cookies.get("employee_token") || Cookies.get("admin_token");
+      const { data } = await axiosInstance.put(
+        `/api/auth/employee/edit`,
+        updatedData,
+        {
+          headers: {
+            "auth-token": token,
+          },
+        }
+      );
+
+      return data;
+    } catch (error) {
+      console.error("Failed to edit user data:", error);
+      return error
+    }
+  };
+
   const logout = () => {
     setLoggedout(true);
     Cookies.remove("employee_token");
@@ -88,6 +109,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         userType,
         loggedOut,
         fetchUserData,
+        editUserDetails,
       }}
     >
       {children}

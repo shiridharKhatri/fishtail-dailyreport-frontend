@@ -4,6 +4,7 @@ import { useState, useEffect, ChangeEvent, JSX } from "react";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
 import GlassBackground from "@/components/glass-background";
+import { Toaster, toast } from "sonner";
 import {
   Mail,
   Phone,
@@ -12,6 +13,7 @@ import {
   Edit2,
   Save,
   ArrowLeft,
+  User,
 } from "lucide-react";
 import moment from "moment";
 import Avatar from "@/components/Avatar";
@@ -20,9 +22,87 @@ import Image from "next/image";
 import Navbar from "@/components/navbar";
 import { ProfileSkeletonLoader } from "@/components/skeleton-loaders/profile-skeleton";
 
+const Field = ({
+  label,
+  icon,
+  field,
+  editable = true,
+  type = "text",
+  options = [],
+  formData,
+  handleInput,
+  isEditing,
+}: {
+  label: string;
+  icon?: JSX.Element | null;
+  field: string;
+  editable?: boolean;
+  type?: "text" | "date" | "select";
+  options?: string[];
+  formData: any;
+  handleInput: any;
+  isEditing: boolean;
+}) => {
+  const getInputValue = () => {
+    if (type === "date") {
+      if (formData[field] === "N/A" || !formData[field]) return "";
+      return moment(formData[field]).isValid()
+        ? moment(formData[field]).format("YYYY-MM-DD")
+        : "";
+    }
+    return formData[field];
+  };
+
+  const getDisplayValue = () => {
+    if (type === "date" && formData[field] !== "N/A") {
+      return moment(formData[field]).isValid()
+        ? moment(formData[field]).format("MMMM D, YYYY")
+        : formData[field];
+    }
+    return formData[field];
+  };
+
+  return (
+    <div>
+      <label className="text-sm font-medium text-foreground block mb-2 flex items-center gap-2">
+        {icon}
+        {label}
+      </label>
+
+      {editable && isEditing ? (
+        type === "select" ? (
+          <select
+            value={formData[field]}
+            onChange={handleInput(field)}
+            className="w-full px-4 py-2.5 rounded-lg bg-input border border-border text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 appearance-none"
+          >
+            <option value="" disabled>
+              Select {label}
+            </option>
+            {options.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type={type}
+            value={getInputValue()}
+            onChange={handleInput(field)}
+            className="w-full px-4 py-2.5 rounded-lg bg-input border border-border text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
+          />
+        )
+      ) : (
+        <p className="text-foreground">{getDisplayValue()}</p>
+      )}
+    </div>
+  );
+};
+
 export default function EmployeeProfile() {
   const router = useRouter();
-  const { user, isLoggedIn } = useAuth();
+  const { user, isLoggedIn, editUserDetails } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
 
   const defaultProfile = {
@@ -39,49 +119,34 @@ export default function EmployeeProfile() {
   };
 
   const [formData, setFormData] = useState(defaultProfile);
-
   useEffect(() => {
     setFormData(defaultProfile);
   }, [user]);
 
   const handleInput =
-    (field: keyof typeof formData) => (e: ChangeEvent<HTMLInputElement>) =>
+    (field: keyof typeof formData) =>
+    (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
       setFormData((prev) => ({ ...prev, [field]: e.target.value }));
 
-  const handleSave = () => {
-    // Save API call can be placed here later
+  const handleSave = async () => {
+    let data = {
+      name: formData.fullName,
+      phone: formData.phone,
+      location: formData.location,
+      gender: formData.gender,
+      dateOfBirth: formData.dateOfBirth,
+    };
+
+    await editUserDetails(data)
+      .then((response) => {
+        toast.success(response.message);
+      })
+      .catch((_) => {
+        console.error("Error updating user details");
+      });
+
     setIsEditing(false);
   };
-
-  const Field = ({
-    label,
-    icon,
-    field,
-    editable = true,
-  }: {
-    label: string;
-    icon?: JSX.Element | null;
-    field: keyof typeof formData;
-    editable?: boolean;
-  }) => (
-    <div>
-      <label className="text-sm font-medium text-foreground block mb-2 flex items-center gap-2">
-        {icon}
-        {label}
-      </label>
-
-      {editable && isEditing ? (
-        <input
-          type="text"
-          value={formData[field]}
-          onChange={handleInput(field)}
-          className="w-full px-4 py-2.5 rounded-lg bg-input border border-border text-foreground focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30"
-        />
-      ) : (
-        <p className="text-foreground">{formData[field]}</p>
-      )}
-    </div>
-  );
 
   return (
     <>
@@ -96,7 +161,6 @@ export default function EmployeeProfile() {
             />
 
             <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-              {/* Back button */}
               <button
                 onClick={() => router.back()}
                 className="flex items-center gap-2 px-3 py-2 mb-8 rounded-lg hover:bg-accent transition-all"
@@ -105,7 +169,6 @@ export default function EmployeeProfile() {
                 <span className="text-sm font-medium">Back to Dashboard</span>
               </button>
 
-              {/* Title */}
               <div className="mb-8">
                 <h2 className="text-3xl font-bold text-foreground">Profile</h2>
                 <p className="text-muted-foreground mt-2">
@@ -113,9 +176,7 @@ export default function EmployeeProfile() {
                 </p>
               </div>
 
-              {/* Content */}
               <div className="glass rounded-2xl p-8 space-y-8">
-                {/* Profile Header */}
                 <div className="flex items-center justify-between pb-6 border-b border-border">
                   <div className="flex items-center gap-4">
                     <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">
@@ -163,38 +224,69 @@ export default function EmployeeProfile() {
                   </button>
                 </div>
 
-                {/* Profile Info */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Field label="Full Name" icon={null} field="fullName" />
+                  <Field
+                    label="Full Name"
+                    icon={null}
+                    field="fullName"
+                    formData={formData}
+                    handleInput={handleInput}
+                    isEditing={isEditing}
+                  />
                   <Field
                     label="Email"
                     icon={<Mail className="w-4 h-4" />}
                     field="email"
+                    editable={false}
+                    formData={formData}
+                    handleInput={handleInput}
+                    isEditing={isEditing}
                   />
                   <Field
                     label="Phone"
                     icon={<Phone className="w-4 h-4" />}
                     field="phone"
+                    formData={formData}
+                    handleInput={handleInput}
+                    isEditing={isEditing}
                   />
                   <Field
                     label="Location"
                     icon={<MapPin className="w-4 h-4" />}
                     field="location"
+                    formData={formData}
+                    handleInput={handleInput}
+                    isEditing={isEditing}
                   />
+
                   <Field
                     label="Gender"
-                    icon={<MapPin className="w-4 h-4" />}
+                    icon={<User className="w-4 h-4" />}
                     field="gender"
+                    type="select"
+                    options={["male", "female", "other"]}
+                    formData={formData}
+                    handleInput={handleInput}
+                    isEditing={isEditing}
                   />
+
                   <Field
                     label="Date of Birth"
                     icon={<Calendar className="w-4 h-4" />}
                     field="dateOfBirth"
+                    type="date"
+                    formData={formData}
+                    handleInput={handleInput}
+                    isEditing={isEditing}
                   />
+
                   <Field
                     label="Department"
                     field="department"
                     editable={false}
+                    formData={formData}
+                    handleInput={handleInput}
+                    isEditing={isEditing}
                   />
 
                   <div>
@@ -203,7 +295,7 @@ export default function EmployeeProfile() {
                       Join Date
                     </label>
                     <p className="text-foreground">
-                      {moment(formData.joinDate).calendar()}
+                      {moment(formData.joinDate).format("MMMM D, YYYY")}
                     </p>
                   </div>
                 </div>
@@ -212,6 +304,7 @@ export default function EmployeeProfile() {
           </div>
         </div>
       )}
+      <Toaster richColors={true} />
     </>
   );
 }
