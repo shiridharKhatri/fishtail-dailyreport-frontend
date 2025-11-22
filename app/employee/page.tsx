@@ -147,7 +147,7 @@ export default function EmployeeDashboard() {
         toast.error(response.data.message || "Failed to submit report.");
       }
     } catch (err: unknown) {
-      
+      console.log(err)
       toast.error("Failed to submit report.");
     } finally {
       setIsSubmittingReport(false);

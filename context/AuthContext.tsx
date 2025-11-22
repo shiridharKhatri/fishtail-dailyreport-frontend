@@ -31,6 +31,7 @@ type AuthContextType = {
   verification: Object;
   verifyUser: () => Promise<void>;
   logout: () => void;
+  loggedOut: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -40,8 +41,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [verification, setVerification] = useState<Object>({});
   const [userType, setUserType] = useState("");
+  const [loggedOut, setLoggedOut] = useState(false);
   const router = useRouter();
   const token = Cookies.get("employee_token");
+
 
   useEffect(() => {
     let empToken = Cookies.get("employee_token");
@@ -94,11 +97,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
+    setLoggedOut(true);
     Cookies.remove("employee_token");
     Cookies.remove("admin_token");
-    setIsLoggedIn(false);
     setUser(null);
     router.push("/");
+    setIsLoggedIn(false);
+    setLoggedOut(true);
   };
 
   useEffect(() => {
@@ -108,7 +113,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isLoggedIn, logout, verification, userType, verifyUser }}
+      value={{ user, isLoggedIn, logout, verification, userType, verifyUser, loggedOut }}
     >
       {children}
     </AuthContext.Provider>
