@@ -30,7 +30,7 @@ type AuthContextType = {
   userType: string;
   verification: Object;
   logout: () => void;
-  loggedOut:Boolean
+  loggedOut: Boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -42,13 +42,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userType, setUserType] = useState("");
   const router = useRouter();
   const token = Cookies.get("employee_token");
-  const [loggedOut, setLoggedout] = useState(false)
+  const [loggedOut, setLoggedout] = useState(false);
   const fetchUserData = async () => {
     try {
       const { data } = await axiosInstance.get(`/api/auth/employee/fetch`, {
         // withCredentials: true,{
         headers: {
-          'auth-token' : token
+          "auth-token": token,
         },
       });
 
@@ -62,16 +62,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
- 
-
   const logout = () => {
-    setLoggedout(true)
+    setLoggedout(true);
     Cookies.remove("employee_token");
     Cookies.remove("admin_token");
     setIsLoggedIn(false);
     setUser(null);
-    router.push("/");
-    setLoggedout(false)
+    router.replace("/");
+
+    setTimeout(() => setLoggedout(false), 500); // reset after half a second
   };
 
   useEffect(() => {

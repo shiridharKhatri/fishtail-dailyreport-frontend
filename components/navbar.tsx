@@ -25,7 +25,7 @@ export default function Navbar() {
   const onLogoutHandler = () => {
     logout();
   };
-
+  console.log(loggedOut);
 
   return (
     <>
