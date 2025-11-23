@@ -273,7 +273,7 @@ export default function EmployeeDashboard() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Report Form */}
                 <div className="lg:col-span-2">
-                  <div className="glass rounded-2xl p-6 sm:p-8 space-y-6 bg-[var(--card)] rounded-2xl md:rounded-2xl border border-[var(--border)]">
+                  <div className="glass rounded-2xl p-6 sm:p-8 space-y-6 bg-[var(--card)] rounded-2xl md:rounded-2xl border border-[var(--border)] ">
                     <div>
                       <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
                         <Calendar className="w-5 h-5 text-primary" />
@@ -524,7 +524,7 @@ export default function EmployeeDashboard() {
           {/* View Details Modal */}
           {selectedReport && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-              <div className="glass rounded-2xl p-6 sm:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto space-y-6 relative">
+              <div className="glass rounded-2xl p-6 sm:p-8 w-full max-w-lg max-h-[90vh] overflow-y-auto space-y-6 relative bg-[var(--card)] rounded-2xl md:rounded-2xl border border-[var(--border)]">
                 <div className="flex items-center justify-between border-b border-border/50 pb-4">
                   <div>
                     <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
