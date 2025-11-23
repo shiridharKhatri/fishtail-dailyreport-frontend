@@ -136,15 +136,12 @@ export default function EmployeeProfile() {
       gender: formData.gender,
       dateOfBirth: formData.dateOfBirth,
     };
-
-    await editUserDetails(data)
-      .then((response) => {
-        toast.success(response.message);
-      })
-      .catch((_) => {
-        console.error("Error updating user details");
-      });
-
+    let response = await editUserDetails(data);
+    if (response.success) {
+      toast.success(response.message);
+    } else {
+      toast.error("Failed to update user details");
+    }
     setIsEditing(false);
   };
 
