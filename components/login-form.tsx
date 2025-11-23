@@ -54,6 +54,7 @@ export default function LoginForm() {
           
           // window.location.reload()
         } else {
+          setIsLoggedin(false)
           toast.error(data.message)
         }
       }

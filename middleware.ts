@@ -12,7 +12,7 @@ export function middleware(req: NextRequest) {
     if (employeeToken) {
       url.pathname = "/employee";
       return NextResponse.redirect(url);
-    }
+    } 
     if (adminToken) {
       url.pathname = "/admin";
       return NextResponse.redirect(url);

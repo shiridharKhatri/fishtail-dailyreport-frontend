@@ -173,7 +173,7 @@ export default function EmployeeProfile() {
                 </p>
               </div>
 
-              <div className="glass rounded-2xl p-8 space-y-8">
+              <div className="glass rounded-2xl p-8 space-y-8 bg-[var(--card)] rounded-2xl md:rounded-2xl border border-[var(--border)]">
                 <div className="flex items-center justify-between pb-6 border-b border-border">
                   <div className="flex items-center gap-4">
                     <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center">

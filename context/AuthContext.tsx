@@ -96,9 +96,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    fetchUserData();
+     const token = Cookies.get("employee_token") || Cookies.get("admin_token");
+    if (token) fetchUserData();
   }, []);
-
   return (
     <AuthContext.Provider
       value={{
